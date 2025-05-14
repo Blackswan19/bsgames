@@ -8,15 +8,13 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald|Noto+Sans">
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald|Noto+Sans">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald|Noto+Sans">
     
     <style>
         body {
             font-family: "Noto Sans", sans-serif;
             margin: 0;
             overflow: hidden;
-            /* background: url('https://static.vecteezy.com/system/res/ources/previews/040/550/320/non_2x/ai-generated-cheerful-child-playing-with-cute-toy-animals-on-wooden-floor-generated-by-ai-free-photo.jpg') no-repeat center center/cover; */
-            /* font-family: 'Verdana, Geneva, Tahoma, sans-serif'; */
             text-align: center;
             color: white;
             background-color: black;
@@ -27,6 +25,7 @@
             width: 100vw;
             height: 100vh;
             overflow: hidden;
+            display: none; /* Hidden until game starts */
         }
         
         .balloon {
@@ -89,7 +88,6 @@
             border-radius: 10px;
             color: #ffffff;
             font-weight: 500;
-
         }
 
         #popup {
@@ -121,70 +119,136 @@
             align-items: center;
             justify-content: center;
         }
+
         #message-text {
-    transition: opacity 0.3s ease-in-out;
-}
+            transition: opacity 0.3s ease-in-out;
+        }
 
         .nav-buttons {
             position: fixed;
-    bottom: 100px;
-    width: 100%;
+            bottom: 100px;
+            width: 100%;
         }
+
         .nav-buttons button {
-    transition: opacity 0.3s ease-in-out;
-}
-button {
-    padding: 6px;
-    background: white;
-    border: none;
-    border-radius: 4px;
-    font-family: "Noto Sans", sans-serif;
-    font-size: 14px;
-    color: rgb(0, 0, 0);
-}
-button:hover{
-    color: white;
-    background-color: black;
-}
-.nav-buttons button{
-    padding: 6px 15px;
-    background: white;
-    border: none;
-    border-radius: 4px;
-    font-family: "Noto Sans", sans-serif;
-    font-size: 16px;
-    color: rgb(0, 0, 0);
-}
-button:hover{
-    color: rgb(0, 0, 0);
-    background-color: rgba(255, 255, 255, 0.881);
-}
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        button {
+            padding: 6px;
+            background: white;
+            border: none;
+            border-radius: 4px;
+            font-family: "Noto Sans", sans-serif;
+            font-size: 14px;
+            color: rgb(0, 0, 0);
+        }
+
+        button:hover {
+            color: white;
+            background-color: black;
+        }
+
+        .nav-buttons button {
+            padding: 6px 15px;
+            background: white;
+            border: none;
+            border-radius: 4px;
+            font-family: "Noto Sans", sans-serif;
+            font-size: 16px;
+            color: rgb(0, 0, 0);
+        }
+
+        button:hover {
+            color: rgb(0, 0, 0);
+            background-color: rgba(255, 255, 255, 0.881);
+        }
+
+        #start-screen {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        #start-button {
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        #timer {
+            position: absolute;
+            top: 3%;
+            right: 3%;
+            font-size: 15px;
+            background: rgb(255 255 255 / 11%);
+            padding: 8px 15px;
+            border-radius: 10px;
+            color: #ffffff;
+            font-weight: 500;
+            display: none;
+        }
+
+        #timer i {
+            margin-right: 5px;
+        }
     </style>
 </head>
 <body>
-    <div class="from" style="position: fixed;
-    bottom: 10px;
-    font-size: 10px;
-    left: 10px;">
+    <div class="from" style="position: fixed; bottom: 10px; font-size: 10px; left: 10px;">
         From BS
+    </div>
+    <div id="start-screen">
+        <h1>Balloon Blast</h1>
+        <button id="start-button">Start Game</button>
     </div>
     <div id="game-container">
         <div id="score">Score: 0</div>
+        <div id="timer"><i class="fas fa-clock"></i> 15:00</div>
     </div>
     
     <script>
         let score = 0;
-        
+        let timerInterval = null;
+        let timeLeft = 15 * 60; // 15 minutes in seconds
+        let gameStarted = false;
+
+        const startButton = document.getElementById('start-button');
+        const gameContainer = document.getElementById('game-container');
+        const startScreen = document.getElementById('start-screen');
+        const timerDisplay = document.getElementById('timer');
+
+        function startTimer() {
+            timerDisplay.style.display = 'block';
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerDisplay.innerHTML = `<i class="fas fa-clock"></i> ${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timerDisplay.innerHTML = `<i class="fas fa-clock"></i> Time's Up!`;
+                    gameStarted = false;
+                    // Optionally, stop balloon creation
+                }
+            }, 1000);
+        }
+
         function createBalloon() {
+            if (!gameStarted) return; // Only create balloons if game is active
+
             const balloon = document.createElement('div');
             balloon.classList.add('balloon');
             const colors = [
-  'rgba(255, 105, 180, 0.5)',  // Light Pink
-  'rgba(255, 69, 0, 0.5)',     // Light Orange-Red
-  'rgba(30, 144, 255, 0.5)',   // Light Dodger Blue
-  'rgba(50, 205, 50, 0.5)',    // Light Lime Green
-  'rgba(255, 255, 0, 0.5)'     // Light Yellow
-];
+                'rgba(255, 105, 180, 0.5)',  // Light Pink
+                'rgba(255, 69, 0, 0.5)',     // Light Orange-Red
+                'rgba(30, 144, 255, 0.5)',   // Light Dodger Blue
+                'rgba(50, 205, 50, 0.5)',    // Light Lime Green
+                'rgba(255, 255, 0, 0.5)'     // Light Yellow
+            ];
 
             balloon.style.setProperty('--color', colors[Math.floor(Math.random() * colors.length)]);
             balloon.style.left = `${Math.random() * 90}vw`;
@@ -224,26 +288,14 @@ button:hover{
                 balloon.remove();
             }, 5000);
         }
-        
-        setInterval(createBalloon, 800);
+
+        startButton.addEventListener('click', () => {
+            gameStarted = true;
+            startScreen.style.display = 'none';
+            gameContainer.style.display = 'block';
+            startTimer();
+            setInterval(createBalloon, 800);
+        });
     </script>
-     <script>
-        //         document.addEventListener("DOMContentLoaded", () => {
-        //     const customMenu = document.querySelector(".custom-menu");
-        
-        //     // Show custom menu on right-click
-        //     document.addEventListener("contextmenu", (event) => {
-        //         event.preventDefault();
-        //         customMenu.style.display = "block";
-        //         customMenu.style.top = `${event.pageY}px`;
-        //         customMenu.style.left = `${event.pageX}px`;
-        //     });
-        
-        //     // Hide the menu when clicking elsewhere
-        //     document.addEventListener("click", () => {
-        //         customMenu.style.display = "none";
-        //     });
-        // });
-            </script>
 </body>
 </html>
