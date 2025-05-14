@@ -9,11 +9,7 @@
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Alata&family=Anton&family=Caveat:wght@400..700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Great+Vibes&family=Racing+Sans+One&family=Roboto+Slab:wght@100..900&family=Satisfy&family=Shantell+Sans:ital,wght@0,300..800;1,300..800&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@400..700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Great+Vibes&family=Racing+Sans+One&family=Roboto+Slab:wght@100..900&family=Satisfy&family=Shantell+Sans:ital,wght@0,300..800;1,300..800&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@400..700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Great+Vibes&family=Roboto+Slab:wght@100..900&family=Satisfy&family=Shantell+Sans:ital,wght@0,300..800;1,300..800&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;700&family=Orbitron:wght@400;700&family=Red+Hat+Display:wght@400;900&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Alata&family=Corinthia:wght@400;700&family=DM+Serif+Display:ital@0;1&family=Geologica:wght@100..900&family=Lavishly+Yours&family=League+Spartan:wght@100..900&family=Merriweather+Sans:ital,wght@0,300..800;1,300..800&family=Mrs+Saint+Delafield&family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
         * {
             margin: 0;
@@ -57,8 +53,12 @@
             justify-content: center;
             align-items: flex-end;
             touch-action: manipulation;
-            z-index: 10; /* Ensure balloons are clickable */
-            pointer-events: auto; /* Ensure clicks/touches register */
+            z-index: 10;
+            pointer-events: auto;
+        }
+
+        .balloon.paused {
+            animation-play-state: paused;
         }
 
         .balloon::after {
@@ -84,6 +84,10 @@
             z-index: 5;
         }
 
+        .thread.paused {
+            animation-play-state: paused;
+        }
+
         @keyframes floatUp {
             from { bottom: 0; }
             to { bottom: 100vh; }
@@ -99,11 +103,8 @@
             50% { transform: translateX(-50%) rotate(10deg); }
         }
 
-        #score {
-            position: absolute;
-            top: 3%;
-            left: 50%;
-            transform: translateX(-50%);
+        #score, #missed {
+            
             font-size: 14px;
             background: rgb(255 255 255 / 11%);
             padding: 6px 12px;
@@ -111,6 +112,10 @@
             color: #ffffff;
             font-weight: 500;
             z-index: 20;
+        }
+
+        #missed {
+            top: 8%;
         }
 
         #popup {
@@ -225,10 +230,9 @@
             margin-right: 5px;
         }
 
-        #mute-button {
+        #mute-button, #pause-button {
             position: absolute;
             top: 3%;
-            right: 2%;
             padding: 6px 12px;
             font-size: 12px;
             background: rgb(255 255 255 / 90%);
@@ -242,14 +246,31 @@
             z-index: 20;
         }
 
-        #mute-button:hover {
+        #mute-button {
+            right: 2%;
+        }
+
+        #pause-button {
+            left: 3%;
+        }
+
+        #mute-button:hover, #pause-button:hover {
             background: rgb(255 255 255 / 80%);
         }
 
-        #mute-button i {
+        #mute-button i, #pause-button i {
             font-size: 14px;
         }
-
+.counts {
+    display: flex
+;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    width: 100%;
+    gap: 20px;
+    top: 25px;
+}
         /* Mobile-specific styles */
         @media screen and (max-width: 768px) {
             .balloon {
@@ -267,10 +288,14 @@
                 height: 30px;
             }
 
-            #score {
+            #score, #missed {
                 font-size: 12px;
                 padding: 5px 10px;
                 top: 2%;
+            }
+
+            #missed {
+                top: 7%;
             }
 
             #timer {
@@ -280,14 +305,21 @@
                 right: 2%;
             }
 
-            #mute-button {
+            #mute-button, #pause-button {
                 padding: 5px 10px;
                 font-size: 10px;
                 top: 2%;
+            }
+
+            #mute-button {
                 right: 2%;
             }
 
-            #mute-button i {
+            #pause-button {
+                right: 12%;
+            }
+
+            #mute-button i, #pause-button i {
                 font-size: 12px;
             }
 
@@ -338,7 +370,7 @@
 
             #timer {
                 position: absolute;
-                top: 8%;
+                top: 10%;
                 font-size: 20px;
                 padding: 6px 12px;
                 border-radius: 8px;
@@ -348,9 +380,13 @@
                 width: 100%;
             }
 
-            #score {
+            #score, #missed {
                 font-size: 15px;
                 padding: 5px 10px;
+            }
+
+            #missed {
+                top: 15%;
             }
 
             #start-screen h1 {
@@ -360,6 +396,16 @@
             #start-button {
                 padding: 8px 15px;
                 font-size: 12px;
+            }
+
+            #mute-button, #pause-button {
+                padding: 4px 8px;
+                font-size: 9px;
+            }
+
+            #pause-button {
+                right: 14%;
+                position: relative;
             }
         }
     </style>
@@ -373,10 +419,16 @@
         <button id="start-button">Start Game</button>
     </div>
     <div id="game-container">
-        <div id="score">Score: 0</div>
+        <div class="counts">
+            <div id="score">Score: 0</div>
+            <div id="missed">Missed: 0</div>
+        </div>
         <div id="timer"><i class="fas fa-clock"></i> 05:00</div>
         <button id="mute-button">
             <i class="fas fa-volume-up"></i> Sound On
+        </button>
+        <button id="pause-button">
+            <i class="fas fa-pause"></i> Pause
         </button>
         <div id="result-popup" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.8); color: white; padding: 20px; border-radius: 10px; display: none; text-align: center; font-size: 20px; z-index: 30;">
             <div id="result-text"></div>
@@ -384,13 +436,16 @@
         </div>
     </div>
     <script>
+        const MAX_MISSED_BALLOONS = 50;
         let score = 0;
         let timerInterval = null;
         let timeLeft = 5 * 60;
         let gameStarted = false;
         let balloonInterval = null;
         let isMuted = false;
-        let balloonCounter = 0; // To assign unique z-index
+        let isPaused = false;
+        let balloonCounter = 0;
+        let missedBalloons = 0;
 
         const startButton = document.getElementById('start-button');
         const gameContainer = document.getElementById('game-container');
@@ -399,61 +454,93 @@
         const resultPopup = document.getElementById('result-popup');
         const resultText = document.getElementById('result-text');
         const muteButton = document.getElementById('mute-button');
+        const pauseButton = document.getElementById('pause-button');
+        const missedDisplay = document.getElementById('missed');
 
         muteButton.addEventListener('click', () => {
+            if (!gameStarted) return;
             isMuted = !isMuted;
             muteButton.innerHTML = isMuted 
                 ? '<i class="fas fa-volume-mute"></i> Sound Off'
                 : '<i class="fas fa-volume-up"></i> Sound On';
         });
 
+        pauseButton.addEventListener('click', () => {
+            if (!gameStarted) return;
+            isPaused = !isPaused;
+            pauseButton.innerHTML = isPaused 
+                ? '<i class="fas fa-play"></i> Resume'
+                : '<i class="fas fa-pause"></i> Pause';
+            togglePause();
+        });
+
+        function togglePause() {
+            const balloons = document.querySelectorAll('.balloon, .thread');
+            if (isPaused) {
+                if (timerInterval) clearInterval(timerInterval);
+                timerInterval = null;
+                if (balloonInterval) clearInterval(balloonInterval);
+                balloonInterval = null;
+                balloons.forEach(element => {
+                    element.classList.add('paused');
+                });
+                document.querySelectorAll('.balloon').forEach(balloon => {
+                    balloon.style.pointerEvents = 'none';
+                });
+            } else {
+                startTimer();
+                balloonInterval = setInterval(createBalloon, 800);
+                balloons.forEach(element => {
+                    element.classList.remove('paused');
+                });
+                document.querySelectorAll('.balloon').forEach(balloon => {
+                    balloon.style.pointerEvents = 'auto';
+                });
+            }
+        }
+
         function startTimer() {
             timerDisplay.style.display = 'block';
             timerInterval = setInterval(() => {
+                if (isPaused) return;
                 timeLeft--;
                 const minutes = Math.floor(timeLeft / 60);
                 const seconds = timeLeft % 60;
-                timerDisplay.innerHTML = `<i class="fas fa-clock"></i> ${minutes}:${seconds.toString().padStart(2, '0')}`;
-                
+                timerDisplay.innerHTML = `<i class="fas fa-clock"></i> ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
                     clearInterval(balloonInterval);
                     gameStarted = false;
-                    timerDisplay.innerHTML = `<i class="fas fa-clock"></i> Time's Up!`;
-                    if (score >= 350) {
-                        resultText.innerText = "Game Completed!";
-                    } else {
-                        resultText.innerText = "You Lost";
-                    }
+                    timerDisplay.innerHTML = `<i class="fas fa-clock"></i> Game Over!`;
+                    resultText.innerText = `Time's Up! Final Score: ${score}`;
                     resultPopup.style.display = 'block';
                 }
             }, 1000);
         }
 
+        const colors = [
+            'rgba(255, 105, 180, 0.5)', // Pink
+            'rgba(255, 69, 0, 0.5)',   // Orange
+            'rgba(30, 144, 255, 0.5)', // Blue
+            'rgba(50, 205, 50, 0.5)',  // Green
+            'rgba(255, 255, 0, 0.5)'   // Yellow
+        ];
+
         function createBalloon() {
-            if (!gameStarted) return;
+            if (!gameStarted || isPaused) return;
 
             const balloon = document.createElement('div');
             balloon.classList.add('balloon');
-            const colors = [
-                'rgba(255, 105, 180, 0.5)',
-                'rgba(255, 69, 0, 0.5)',
-                'rgba(30, 144, 255, 0.5)',
-                'rgba(50, 205, 50, 0.5)',
-                'rgba(255, 255, 0, 0.5)'
-            ];
-
             balloon.style.setProperty('--color', colors[Math.floor(Math.random() * colors.length)]);
             balloon.style.left = `${Math.random() * 90}vw`;
-            balloon.style.zIndex = balloonCounter++; // Newer balloons on top
-            
+            balloon.style.zIndex = balloonCounter++;
+
             const thread = document.createElement('div');
             thread.classList.add('thread');
             balloon.appendChild(thread);
-            
-            // Handle both click and touch events
+
             const handlePop = () => {
-                if (!balloon.isConnected) return; // Prevent double-click issues
+                if (!balloon.isConnected) return;
                 const burst = document.createElement('div');
                 burst.style.position = 'absolute';
                 burst.style.top = balloon.style.top;
@@ -466,15 +553,15 @@
                 burst.style.transition = 'opacity 0.5s ease-out';
                 burst.style.zIndex = 15;
                 document.body.appendChild(burst);
-                
+
                 setTimeout(() => burst.remove(), 500);
                 document.body.style.backgroundColor = balloon.style.getPropertyValue('--color');
                 setTimeout(() => document.body.style.backgroundColor = '', 300);
-                
+
                 balloon.remove();
                 score += 1;
                 document.getElementById('score').innerText = `Score: ${score}`;
-                
+
                 if (!isMuted) {
                     const popSound = new Audio('https://www.myinstants.com/media/sounds/balloon-pop.mp3');
                     popSound.play();
@@ -483,25 +570,42 @@
 
             balloon.addEventListener('click', handlePop);
             balloon.addEventListener('touchstart', (e) => {
-                e.preventDefault(); // Prevent default touch behavior
+                e.preventDefault();
                 handlePop();
             }, { passive: false });
-            
+
             document.getElementById('game-container').appendChild(balloon);
-            
+
             setTimeout(() => {
-                if (balloon.isConnected) balloon.remove();
-            }, 2600); // Slightly longer than animation to allow clicks
+                if (balloon.isConnected) {
+                    balloon.remove();
+                    missedBalloons++;
+                    missedDisplay.innerText = `Missed: ${missedBalloons}`;
+                    if (missedBalloons > MAX_MISSED_BALLOONS) {
+                        clearInterval(timerInterval);
+                        clearInterval(balloonInterval);
+                        gameStarted = false;
+                        timerDisplay.innerHTML = `<i class="fas fa-clock"></i> Game Over!`;
+                        resultText.innerText = "Too Many Missed Balloons!";
+                        resultPopup.style.display = 'block';
+                    }
+                }
+            }, 2600);
         }
 
         function restartGame() {
             score = 0;
             timeLeft = 5 * 60;
+            missedBalloons = 0;
             gameStarted = true;
-            balloonCounter = 0; // Reset z-index counter
+            isPaused = false;
+            balloonCounter = 0;
             document.getElementById('score').innerText = `Score: 0`;
+            missedDisplay.innerText = `Missed: 0`;
             timerDisplay.innerHTML = `<i class="fas fa-clock"></i> 05:00`;
             resultPopup.style.display = 'none';
+            pauseButton.innerHTML = '<i class="fas fa-pause"></i> Pause';
+            document.querySelectorAll('.balloon').forEach(balloon => balloon.remove());
             startTimer();
             balloonInterval = setInterval(createBalloon, 800);
         }
