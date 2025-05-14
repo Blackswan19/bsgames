@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BsGames | Balloon Blast</title>
+    <link rel="icon" type="image/x-icon" href="https://media.istockphoto.com/id/858514508/vector/bunch-of-balloons-in-cartoon-flat-style-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=Zo1rST7YmvHecTZzNic2PizbWMqnxm2N_dyfOQjQMfE=">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald|Noto+Sans">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald|Noto+Sans">
+    
+    <style>
+        body {
+            font-family: "Noto Sans", sans-serif;
+            margin: 0;
+            overflow: hidden;
+            /* background: url('https://static.vecteezy.com/system/res/ources/previews/040/550/320/non_2x/ai-generated-cheerful-child-playing-with-cute-toy-animals-on-wooden-floor-generated-by-ai-free-photo.jpg') no-repeat center center/cover; */
+            /* font-family: 'Verdana, Geneva, Tahoma, sans-serif'; */
+            text-align: center;
+            color: white;
+            background-color: black;
+            transition: background 1s;
+        }
+        #game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .balloon {
+            position: absolute;
+            width: 100px;
+            height: 130px;
+            background: radial-gradient(circle at 50% 30%, white, var(--color));
+            border-radius: 50%;
+            cursor: pointer;
+            animation: floatUp 5s linear forwards, swing 2s infinite ease-in-out;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+        }
+        
+        .balloon::after {
+            content: '';
+            position: absolute;
+            bottom: -16px;
+            width: 16px;
+            height: 22px;
+            background: var(--color);
+            clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+        }
+
+        .thread {
+            position: absolute;
+            width: 2px;
+            height: 50px;
+            background: gray;
+            left: 50%;
+            top: 100%;
+            transform: translateX(-50%);
+            animation: swingThread 2s infinite ease-in-out;
+        }
+
+        @keyframes floatUp {
+            from { bottom: 0; }
+            to { bottom: 100vh; }
+        }
+
+        @keyframes swing {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(10px); }
+        }
+
+        @keyframes swingThread {
+            0%, 100% { transform: translateX(-50%) rotate(0deg); }
+            50% { transform: translateX(-50%) rotate(10deg); }
+        }
+        
+        #score {
+            position: absolute;
+            top: 3%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 15px;
+            background: rgb(255 255 255 / 11%);
+            padding: 8px 15px;
+            border-radius: 10px;
+            color: #ffffff;
+            font-weight: 500;
+
+        }
+
+        #popup {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgb(0 0 0 / 35%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            line-height: 48px;
+        }
+
+        #birthday-message {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 28px;
+            background: pink;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 100vw;
+            height: 100vh;
+            color: black;
+            align-items: center;
+            justify-content: center;
+        }
+        #message-text {
+    transition: opacity 0.3s ease-in-out;
+}
+
+        .nav-buttons {
+            position: fixed;
+    bottom: 100px;
+    width: 100%;
+        }
+        .nav-buttons button {
+    transition: opacity 0.3s ease-in-out;
+}
+button {
+    padding: 6px;
+    background: white;
+    border: none;
+    border-radius: 4px;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 14px;
+    color: rgb(0, 0, 0);
+}
+button:hover{
+    color: white;
+    background-color: black;
+}
+.nav-buttons button{
+    padding: 6px 15px;
+    background: white;
+    border: none;
+    border-radius: 4px;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 16px;
+    color: rgb(0, 0, 0);
+}
+button:hover{
+    color: rgb(0, 0, 0);
+    background-color: rgba(255, 255, 255, 0.881);
+}
+    </style>
+</head>
+<body>
+    <div class="from" style="position: fixed;
+    bottom: 10px;
+    font-size: 10px;
+    left: 10px;">
+        From BS
+    </div>
+    <div id="game-container">
+        <div id="score">Score: 0</div>
+    </div>
+    
+    <script>
+        let score = 0;
+        
+        function createBalloon() {
+            const balloon = document.createElement('div');
+            balloon.classList.add('balloon');
+            const colors = [
+  'rgba(255, 105, 180, 0.5)',  // Light Pink
+  'rgba(255, 69, 0, 0.5)',     // Light Orange-Red
+  'rgba(30, 144, 255, 0.5)',   // Light Dodger Blue
+  'rgba(50, 205, 50, 0.5)',    // Light Lime Green
+  'rgba(255, 255, 0, 0.5)'     // Light Yellow
+];
+
+            balloon.style.setProperty('--color', colors[Math.floor(Math.random() * colors.length)]);
+            balloon.style.left = `${Math.random() * 90}vw`;
+            
+            const thread = document.createElement('div');
+            thread.classList.add('thread');
+            balloon.appendChild(thread);
+            
+            balloon.addEventListener('click', () => {
+                const burst = document.createElement('div');
+                burst.style.position = 'absolute';
+                burst.style.top = balloon.style.top;
+                burst.style.left = balloon.style.left;
+                burst.style.width = '200px';
+                burst.style.height = '200px';
+                burst.style.background = balloon.style.getPropertyValue('--color');
+                burst.style.borderRadius = '50%';
+                burst.style.opacity = '0.7';
+                burst.style.transition = 'opacity 0.5s ease-out';
+                document.body.appendChild(burst);
+                
+                setTimeout(() => burst.remove(), 500);
+                document.body.style.backgroundColor = balloon.style.getPropertyValue('--color');
+                setTimeout(() => document.body.style.backgroundColor = '', 300);
+                
+                balloon.remove();
+                score += 1;
+                document.getElementById('score').innerText = `Score: ${score}`;
+                
+                const popSound = new Audio('https://www.myinstants.com/media/sounds/balloon-pop.mp3');
+                popSound.play();
+            });
+            
+            document.getElementById('game-container').appendChild(balloon);
+            
+            setTimeout(() => {
+                balloon.remove();
+            }, 5000);
+        }
+        
+        setInterval(createBalloon, 800);
+    </script>
+     <script>
+        //         document.addEventListener("DOMContentLoaded", () => {
+        //     const customMenu = document.querySelector(".custom-menu");
+        
+        //     // Show custom menu on right-click
+        //     document.addEventListener("contextmenu", (event) => {
+        //         event.preventDefault();
+        //         customMenu.style.display = "block";
+        //         customMenu.style.top = `${event.pageY}px`;
+        //         customMenu.style.left = `${event.pageX}px`;
+        //     });
+        
+        //     // Hide the menu when clicking elsewhere
+        //     document.addEventListener("click", () => {
+        //         customMenu.style.display = "none";
+        //     });
+        // });
+            </script>
+</body>
+</html>
