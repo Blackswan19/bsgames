@@ -52,11 +52,13 @@
             background: radial-gradient(circle at 50% 30%, white, var(--color));
             border-radius: 50%;
             cursor: pointer;
-            animation: floatUp 3s linear forwards, swing 2s infinite ease-in-out;
+            animation: floatUp 2.5s linear forwards, swing 2s infinite ease-in-out;
             display: flex;
             justify-content: center;
             align-items: flex-end;
             touch-action: manipulation;
+            z-index: 10; /* Ensure balloons are clickable */
+            pointer-events: auto; /* Ensure clicks/touches register */
         }
 
         .balloon::after {
@@ -67,6 +69,7 @@
             height: 16px;
             background: var(--color);
             clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+            z-index: 5;
         }
 
         .thread {
@@ -78,6 +81,7 @@
             top: 100%;
             transform: translateX(-50%);
             animation: swingThread 2s infinite ease-in-out;
+            z-index: 5;
         }
 
         @keyframes floatUp {
@@ -106,6 +110,7 @@
             border-radius: 8px;
             color: #ffffff;
             font-weight: 500;
+            z-index: 20;
         }
 
         #popup {
@@ -119,6 +124,7 @@
             display: none;
             line-height: 36px;
             font-size: 12px;
+            z-index: 20;
         }
 
         #birthday-message {
@@ -137,6 +143,7 @@
             color: black;
             align-items: center;
             justify-content: center;
+            z-index: 20;
         }
 
         #message-text {
@@ -150,6 +157,7 @@
             display: flex;
             justify-content: center;
             gap: 10px;
+            z-index: 20;
         }
 
         .nav-buttons button {
@@ -172,6 +180,7 @@
             font-size: 14px;
             color: rgb(0, 0, 0);
             touch-action: manipulation;
+            cursor: pointer;
         }
 
         button:hover {
@@ -185,6 +194,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
+            z-index: 20;
         }
 
         #start-screen h1 {
@@ -208,6 +218,7 @@
             font-weight: 500;
             display: none;
             width: 100%;
+            z-index: 20;
         }
 
         #timer i {
@@ -228,6 +239,7 @@
             align-items: center;
             gap: 5px;
             touch-action: manipulation;
+            z-index: 20;
         }
 
         #mute-button:hover {
@@ -366,7 +378,7 @@
         <button id="mute-button">
             <i class="fas fa-volume-up"></i> Sound On
         </button>
-        <div id="result-popup" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.8); color: white; padding: 20px; border-radius: 10px; display: none; text-align: center; font-size: 20px;">
+        <div id="result-popup" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.8); color: white; padding: 20px; border-radius: 10px; display: none; text-align: center; font-size: 20px; z-index: 30;">
             <div id="result-text"></div>
             <button onclick="restartGame()">Play Again</button>
         </div>
@@ -378,6 +390,7 @@
         let gameStarted = false;
         let balloonInterval = null;
         let isMuted = false;
+        let balloonCounter = 0; // To assign unique z-index
 
         const startButton = document.getElementById('start-button');
         const gameContainer = document.getElementById('game-container');
@@ -432,12 +445,15 @@
 
             balloon.style.setProperty('--color', colors[Math.floor(Math.random() * colors.length)]);
             balloon.style.left = `${Math.random() * 90}vw`;
+            balloon.style.zIndex = balloonCounter++; // Newer balloons on top
             
             const thread = document.createElement('div');
             thread.classList.add('thread');
             balloon.appendChild(thread);
             
-            balloon.addEventListener('click', () => {
+            // Handle both click and touch events
+            const handlePop = () => {
+                if (!balloon.isConnected) return; // Prevent double-click issues
                 const burst = document.createElement('div');
                 burst.style.position = 'absolute';
                 burst.style.top = balloon.style.top;
@@ -448,6 +464,7 @@
                 burst.style.borderRadius = '50%';
                 burst.style.opacity = '0.7';
                 burst.style.transition = 'opacity 0.5s ease-out';
+                burst.style.zIndex = 15;
                 document.body.appendChild(burst);
                 
                 setTimeout(() => burst.remove(), 500);
@@ -462,19 +479,26 @@
                     const popSound = new Audio('https://www.myinstants.com/media/sounds/balloon-pop.mp3');
                     popSound.play();
                 }
-            });
+            };
+
+            balloon.addEventListener('click', handlePop);
+            balloon.addEventListener('touchstart', (e) => {
+                e.preventDefault(); // Prevent default touch behavior
+                handlePop();
+            }, { passive: false });
             
             document.getElementById('game-container').appendChild(balloon);
             
             setTimeout(() => {
-                balloon.remove();
-            }, 3000); // Match the animation duration
+                if (balloon.isConnected) balloon.remove();
+            }, 2600); // Slightly longer than animation to allow clicks
         }
 
         function restartGame() {
             score = 0;
             timeLeft = 5 * 60;
             gameStarted = true;
+            balloonCounter = 0; // Reset z-index counter
             document.getElementById('score').innerText = `Score: 0`;
             timerDisplay.innerHTML = `<i class="fas fa-clock"></i> 05:00`;
             resultPopup.style.display = 'none';
