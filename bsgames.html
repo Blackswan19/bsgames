@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Babbul Blast - Rockstar Inspired</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+    }
+body {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+    body {
+      background: #000;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      height: 40vh;
+      background: url('https://via.placeholder.com/1920x1080?text=Babbul+Blast+Hero') center/cover no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h1 {
+      font-size: 60px;
+    letter-spacing: 2px;
+    font-weight: 800;
+    color: #ffd600;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: #ccc;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* Game Section */
+    .game-section {
+      padding: 50px 20px;
+      background: #111;
+      text-align: center;
+    }
+
+    .game-section h2 {
+      font-size: 2.2rem;
+      text-transform: uppercase;
+      color: #ffd600;
+      margin-bottom: 30px;
+    }
+
+    .game-card {
+      position: relative;
+      background: #222;
+      border-radius: 8px;
+      overflow: hidden;
+      max-width: 400px;
+      margin: 0 auto;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      cursor: pointer;
+    }
+.option {
+    display: flex
+;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+    .game-card:hover {
+      transform: scale(1.01);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.7);
+    }
+
+    .game-card img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      transition: opacity 0.3s ease;
+    }
+
+    .game-card:hover img {
+      opacity: 0.8;
+    }
+
+    .game-info {
+      padding: 20px;
+    }
+
+    .game-info h3 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+      color: #ffd600;
+      text-transform: uppercase;
+    }
+
+    .game-info p {
+      font-size: 1rem;
+      color: #aaa;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+
+    .game-info a {
+      display: inline-block;
+      padding: 10px 25px;
+      background: #ffd600;
+      color: #000;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      text-transform: uppercase;
+      transition: background 0.3s ease;
+    }
+
+    .game-info a:hover {
+      background: #e6c200;
+    }
+
+    /* Footer */
+    .footer {
+      background: #0a0a0a;
+      padding: 30px 20px;
+      text-align: center;
+      border-top: 1px solid #333;
+    }
+
+    .footer p {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+
+      .hero p {
+        font-size: 1rem;
+      }
+
+      .game-section h2 {
+        font-size: 1.8rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero {
+        height: 40vh;
+      }
+
+      .hero h1 {
+        font-size: 50px;
+      }
+
+      .game-card img {
+        height: 200px;
+      }
+      .option{
+            display: flex
+;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>BsGames</h1>
+      <p>Welcome to Games of Black swan world</p>
+    </div>
+  </section>
+  <script src="noright.js"></script>
+  <!-- Game Section -->
+  <section class="game-section">
+    <h2>Games</h2>
+    <div class="game-card">
+      <img src="https://media.istockphoto.com/id/858514508/vector/bunch-of-balloons-in-cartoon-flat-style-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=Zo1rST7YmvHecTZzNic2PizbWMqnxm2N_dyfOQjQMfE=" alt="Babbul Blast">
+      <div class="game-info">
+        <h3>Babbul Blast</h3>
+        <p>Blast babbuls quickly before time runs out. Compete with others, score high, and become the ultimate Babbul Blast champion!</p>
+       <div class="option">
+            <a href="https://blackswan19.github.io/bsgames/game1">play now</a>
+            <a href="https://forms.gle/Yka1AMBMdGVksL6Z8">I Completed</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>© 2025 Black swan. All rights reserved.</p>
+  </footer>
+</body>
+</html>
